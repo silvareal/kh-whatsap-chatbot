@@ -1,0 +1,197 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String     @id @default(cuid())
+  whatsappNumber String     @unique
+  fullName       String
+  age            Int
+  gender         Gender
+  passport       String     @unique
+  status         UserStatus @default(PENDING)
+  rejectionCount Int        @default(0)
+  isBanned       Boolean    @default(false)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  // Relations
+  sessions    Session[]
+  intakeForms IntakeForm[]
+  appeals     Appeal[]
+  counselor   Counselor?   @relation(fields: [counselorId], references: [id])
+  counselorId String?
+
+  @@map("users")
+}
+
+model Session {
+  id          String        @id @default(cuid())
+  userId      String
+  status      SessionStatus @default(IN_PROGRESS)
+  type        CareType?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  completedAt DateTime?
+
+  // Relations
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  intakeForm    IntakeForm?
+  reminders     Reminder[]
+  feedbackForm  FeedbackForm?
+  MedicalReport MedicalReport[]
+
+  @@map("sessions")
+}
+
+model IntakeForm {
+  id             String   @id @default(cuid())
+  userId         String
+  sessionId      String   @unique
+  name           String
+  age            Int
+  state          String
+  typeOfCare     CareType
+  whatsappNumber String
+  address        String
+  isCompleted    Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("intake_forms")
+}
+
+model Counselor {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  users User[]
+
+  @@map("counselors")
+}
+
+model Reminder {
+  id          String       @id @default(cuid())
+  sessionId   String
+  type        ReminderType
+  dueDate     DateTime
+  isSent      Boolean      @default(false)
+  isCompleted Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relations
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("reminders")
+}
+
+model Appeal {
+  id         String       @id @default(cuid())
+  userId     String
+  reason     String
+  status     AppealStatus @default(PENDING)
+  adminNotes String?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("appeals")
+}
+
+model FeedbackForm {
+  id          String   @id @default(cuid())
+  sessionId   String   @unique
+  rating      Int?
+  comment     String?
+  isCompleted Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("feedback_forms")
+}
+
+model MedicalReport {
+  id         String     @id @default(cuid())
+  sessionId  String
+  reportType ReportType
+  fileUrl    String
+  isUploaded Boolean    @default(false)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  // Relations
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("medical_reports")
+}
+
+// Enums
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum UserStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  BANNED
+}
+
+enum SessionStatus {
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  ESCALATED
+}
+
+enum CareType {
+  MEDICATION
+  SURGICAL
+}
+
+enum ReminderType {
+  COUNSELOR_FOLLOWUP
+  FEEDBACK_REQUEST
+  MEDICAL_REPORT_REQUEST
+}
+
+enum AppealStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum ReportType {
+  DOCTOR_REPORT
+  SCAN
+  LAB_RESULTS
+}
