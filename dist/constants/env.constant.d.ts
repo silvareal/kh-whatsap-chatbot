@@ -1,0 +1,14 @@
+export declare const NODE_ENV: any;
+export declare const IS_DEVELOPMENT: boolean;
+export declare const IS_PRODUCTION: boolean;
+export declare const IS_STAGING: boolean;
+export declare const PORT: any;
+export declare const DATABASE_URL: any;
+export declare const LOGTAIL_SOURCE_TOKEN: any;
+export declare const LOGTAIL_INGESTING_HOST: any;
+export declare const JWT_SECRET: any;
+export declare const JWT_EXPIRATION_TIME: any;
+export declare const WHATSAPP_API_URL: any;
+export declare const WHATSAPP_ACCESS_TOKEN: any;
+export declare const WHATSAPP_PHONE_NUMBER_ID: any;
+export declare const WHATSAPP_VERIFY_TOKEN: any;

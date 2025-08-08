@@ -1,0 +1,54 @@
+import { WhatsAppService } from '../services/whatsapp.service';
+import { UsersService } from '../users/users.service';
+import { SessionsService } from '../sessions/sessions.service';
+import { AppealsService } from '../appeals/appeals.service';
+import { ProcessedMessage } from '../../types/whatsapp.type';
+export interface UserConversationState {
+    userId?: string;
+    currentStep: string;
+    collectedData: any;
+    isNewUser: boolean;
+}
+export declare class ChatbotService {
+    private readonly whatsappService;
+    private readonly usersService;
+    private readonly sessionsService;
+    private readonly appealsService;
+    private readonly logger;
+    private userStates;
+    constructor(whatsappService: WhatsAppService, usersService: UsersService, sessionsService: SessionsService, appealsService: AppealsService);
+    processMessage(message: ProcessedMessage): Promise<void>;
+    private handleInitialGreeting;
+    private handleNewUserSignup;
+    private handleReturningUser;
+    private handleAcceptedUser;
+    private handleRejectedUser;
+    private handleIntakeForm;
+    private handleAppealForm;
+    private handleFeedbackForm;
+    private handleMedicalReportRequest;
+    private handleDefaultFlow;
+    private sendWelcomeMessage;
+    private sendMessage;
+    private startNewUserSignup;
+    private sendGenderOptions;
+    private sendCareTypeOptions;
+    private sendApprovalPendingMessage;
+    private sendOngoingSessionOptions;
+    private startIntakeForm;
+    private startAppealForm;
+    private sendIntakeCompletedMessage;
+    private sendAppealSubmittedMessage;
+    private sendAppealPendingMessage;
+    private sendRejectionMessage;
+    private sendBannedMessage;
+    private sendHelpMessage;
+    private sendStatusMessage;
+    private sendDefaultResponse;
+    private sendErrorMessage;
+    private sendFeedbackCompletedMessage;
+    private parseGender;
+    private parseCareType;
+    private getUserState;
+    private clearUserState;
+}

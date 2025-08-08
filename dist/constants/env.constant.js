@@ -1,0 +1,22 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WHATSAPP_VERIFY_TOKEN = exports.WHATSAPP_PHONE_NUMBER_ID = exports.WHATSAPP_ACCESS_TOKEN = exports.WHATSAPP_API_URL = exports.JWT_EXPIRATION_TIME = exports.JWT_SECRET = exports.LOGTAIL_INGESTING_HOST = exports.LOGTAIL_SOURCE_TOKEN = exports.DATABASE_URL = exports.PORT = exports.IS_STAGING = exports.IS_PRODUCTION = exports.IS_DEVELOPMENT = exports.NODE_ENV = void 0;
+const config_1 = require("@nestjs/config");
+const dotenv = require("dotenv");
+dotenv.config();
+const config = new config_1.ConfigService();
+exports.NODE_ENV = config.get('NODE_ENV');
+exports.IS_DEVELOPMENT = exports.NODE_ENV === 'development';
+exports.IS_PRODUCTION = exports.NODE_ENV === 'production';
+exports.IS_STAGING = exports.NODE_ENV === 'staging';
+exports.PORT = config.get('PORT') || 3000;
+exports.DATABASE_URL = config.getOrThrow('DATABASE_URL');
+exports.LOGTAIL_SOURCE_TOKEN = config.get('LOGTAIL_SOURCE_TOKEN');
+exports.LOGTAIL_INGESTING_HOST = config.get('LOGTAIL_INGESTING_HOST');
+exports.JWT_SECRET = config.get('JWT_SECRET');
+exports.JWT_EXPIRATION_TIME = config.get('JWT_EXPIRATION_TIME');
+exports.WHATSAPP_API_URL = config.get('WHATSAPP_API_URL') || 'https://graph.facebook.com/v18.0';
+exports.WHATSAPP_ACCESS_TOKEN = config.getOrThrow('WHATSAPP_ACCESS_TOKEN');
+exports.WHATSAPP_PHONE_NUMBER_ID = config.getOrThrow('WHATSAPP_PHONE_NUMBER_ID');
+exports.WHATSAPP_VERIFY_TOKEN = config.get('WHATSAPP_VERIFY_TOKEN') || 'default_verify_token';
+//# sourceMappingURL=env.constant.js.map
